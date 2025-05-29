@@ -45,6 +45,27 @@ class CustomDateRangePicker extends StatefulWidget {
   /// A callback function that is called when the user cancels the selection of the date range.
   final Function() onCancelClick;
 
+  /// Locale for the date range picker.
+  final Locale? locale;
+
+  /// Text for cancel button.
+  final String cancelButtonText;
+
+  /// Text for apply button.
+  final String applyButtonText;
+
+  /// Cancel button style.
+  final ButtonStyle? cancelButtonStyle;
+
+  /// Apply button style.
+  final ButtonStyle? applyButtonStyle;
+
+  /// Text for From label.
+  final String fromText;
+
+  /// Text for To label.
+  final String toText;
+
   const CustomDateRangePicker({
     Key? key,
     this.initialStartDate,
@@ -56,6 +77,13 @@ class CustomDateRangePicker extends StatefulWidget {
     required this.minimumDate,
     required this.maximumDate,
     required this.onCancelClick,
+    this.locale,
+    this.cancelButtonText = 'Cancel',
+    this.applyButtonText = 'Apply',
+    this.cancelButtonStyle,
+    this.applyButtonStyle,
+    this.fromText = 'From',
+    this.toText = 'To',
   }) : super(key: key);
 
   @override
@@ -88,6 +116,9 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
 
   @override
   Widget build(BuildContext context) {
+    final locale = widget.locale ?? Localizations.localeOf(context);
+    final dateFormat = DateFormat('EEE, dd MMM', locale.toString());
+
     return Center(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -131,7 +162,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'From',
+                                  widget.fromText,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w400,
@@ -144,8 +175,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                 ),
                                 Text(
                                   startDate != null
-                                      ? DateFormat('EEE, dd MMM')
-                                          .format(startDate!)
+                                      ? dateFormat.format(startDate!)
                                       : '--/-- ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -167,7 +197,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'To',
+                                  widget.toText,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
@@ -179,8 +209,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                 ),
                                 Text(
                                   endDate != null
-                                      ? DateFormat('EEE, dd MMM')
-                                          .format(endDate!)
+                                      ? dateFormat.format(endDate!)
                                       : '--/-- ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -209,6 +238,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                             endDate = endDateData;
                           });
                         },
+                        locale: locale,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -223,33 +253,39 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                       BorderRadius.all(Radius.circular(24.0)),
                                 ),
                                 child: OutlinedButton(
-                                  style: ButtonStyle(
-                                    side: WidgetStateProperty.all(
-                                        BorderSide(color: widget.primaryColor)),
-                                    shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(24.0)),
+                                  style: widget.cancelButtonStyle ??
+                                      ButtonStyle(
+                                        side: WidgetStateProperty.all(
+                                            BorderSide(
+                                                color: widget.primaryColor)),
+                                        shape: WidgetStateProperty.all(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(24.0)),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            WidgetStateProperty.all(
+                                                widget.primaryColor),
+                                        foregroundColor:
+                                            WidgetStateProperty.all(
+                                                Colors.white),
+                                        textStyle: WidgetStateProperty.all(
+                                          const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    backgroundColor: WidgetStateProperty.all(
-                                        widget.primaryColor),
-                                  ),
                                   onPressed: () {
                                     try {
                                       widget.onCancelClick();
                                       Navigator.pop(context);
                                     } catch (_) {}
                                   },
-                                  child: const Center(
-                                    child: Text(
-                                      'Cancel',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                  child: Center(
+                                    child: Text(widget.cancelButtonText),
                                   ),
                                 ),
                               ),
@@ -263,33 +299,39 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                       BorderRadius.all(Radius.circular(24.0)),
                                 ),
                                 child: OutlinedButton(
-                                  style: ButtonStyle(
-                                    side: WidgetStateProperty.all(
-                                        BorderSide(color: widget.primaryColor)),
-                                    shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(24.0)),
+                                  style: widget.applyButtonStyle ??
+                                      ButtonStyle(
+                                        side: WidgetStateProperty.all(
+                                            BorderSide(
+                                                color: widget.primaryColor)),
+                                        shape: WidgetStateProperty.all(
+                                          const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(24.0)),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            WidgetStateProperty.all(
+                                                widget.primaryColor),
+                                        foregroundColor:
+                                            WidgetStateProperty.all(
+                                                Colors.white),
+                                        textStyle: WidgetStateProperty.all(
+                                          const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    backgroundColor: WidgetStateProperty.all(
-                                        widget.primaryColor),
-                                  ),
                                   onPressed: () {
                                     try {
                                       widget.onApplyClick(startDate!, endDate!);
                                       Navigator.pop(context);
                                     } catch (_) {}
                                   },
-                                  child: const Center(
-                                    child: Text(
-                                      'Apply',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                  child: Center(
+                                    child: Text(widget.applyButtonText),
                                   ),
                                 ),
                               ),
@@ -334,6 +376,11 @@ void showCustomDateRangePicker(
   required Color backgroundColor,
   required Color primaryColor,
   String? fontFamily,
+  Locale? locale,
+  String cancelButtonText = 'Cancel',
+  String applyButtonText = 'Apply',
+  String fromText = 'From',
+  String toText = 'To',
 }) {
   /// Request focus to take it away from any input field that might be in focus
   FocusScope.of(context).requestFocus(FocusNode());
@@ -351,6 +398,11 @@ void showCustomDateRangePicker(
       initialEndDate: endDate,
       onApplyClick: onApplyClick,
       onCancelClick: onCancelClick,
+      locale: locale,
+      cancelButtonText: cancelButtonText,
+      applyButtonText: applyButtonText,
+      fromText: fromText,
+      toText: toText,
     ),
   );
 }
